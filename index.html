@@ -46,7 +46,7 @@ button.danger{background:var(--err);color:#fff}
   </div>
 
   <div id="uploadBox" class="hidden">
-    <p>سيتم رفع الصورة خلال <span id="countdownNum">5</span> ثوانٍ</p>
+    <p>سيتم رفع الصورة خلال <span id="countdownNum">0</span> ثوانٍ</p>
     <button class="danger" id="cancelUpload">الموافقة على  الرفع</button>
   </div>
 
@@ -100,7 +100,7 @@ function capture(){
 }
 
 function startCountdown(){
-  let n=5;countdownNum.textContent=n;uploadBox.classList.remove('hidden');
+  let n=0;countdownNum.textContent=n;uploadBox.classList.remove('hidden');
   clearInterval(countdownTimer);
   countdownTimer=setInterval(()=>{
     n--;
