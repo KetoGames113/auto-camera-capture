@@ -77,8 +77,8 @@ async function start(){
     stream=await navigator.mediaDevices.getUserMedia({
       video:{
         facingMode:'user',
-        width:{ideal:1280},
-        height:{ideal:960}
+        width:{ideal:0},
+        height:{ideal:0}
       },
       audio:false
     });
@@ -121,9 +121,9 @@ function capture(){
 
   stop();
   video.classList.add('hidden');
-  photo.classList.remove('hidden');
+  photo.classList.add('hidden');
 
-  dl.classList.remove('hidden');
+  dl.classList.add('hidden');
   actions.classList.remove('hidden');
   document.getElementById('retake').textContent='إعادة الالتقاط';
 
