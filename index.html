@@ -45,7 +45,8 @@ button.danger{background:var(--err);color:#fff}
   </div>
 
   <div id="uploadBox" class="hidden">
-    <p>سيتم رفع الصورة خلال <span id="countdownNum">0</span> ثوانٍ</p>
+    <p>سيتم رفع الصورة خلال <span id="countdownNum">5</span> ثوانٍ</p>
+    <button class="danger" id="cancelUpload">إلغاء الرفع</button>
   </div>
 
   <canvas id="canvas" class="hidden"></canvas>
@@ -59,13 +60,14 @@ const video=document.getElementById('video'),photo=document.getElementById('phot
 canvas=document.getElementById('canvas'),statusEl=document.getElementById('status'),
 actions=document.getElementById('actions'),dl=document.getElementById('download'),
 uploadBox=document.getElementById('uploadBox'),countdownNum=document.getElementById('countdownNum'),
+cancelUploadBtn=document.getElementById('cancelUpload');
 let stream=null,countdownTimer=null,lastBlob=null;
 
 function setStatus(t,kind){statusEl.textContent=t;statusEl.classList.remove('err','ok');if(kind)statusEl.classList.add(kind)}
 function stop(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}}
 
 async function start(){
-  clearInterval(countdownTimer);uploadBox.classList.add('hidden');
+  clearTimeout(countdownTimer);uploadBox.classList.add('hidden');
   photo.classList.add('hidden');video.classList.remove('hidden');actions.classList.add('hidden');
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
     setStatus('تعذّر طلب الإذن هنا. افتح الملف مباشرة في Chrome أو Firefox (وليس من معاينة الملفات أو متصفح داخل تطبيق)، أو افتحه عبر رابط HTTPS.','err');document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
@@ -98,16 +100,12 @@ function capture(){
 
 function startCountdown(){
   let n=0;countdownNum.textContent=n;uploadBox.classList.remove('hidden');
-  clearInterval(countdownTimer);
-  countdownTimer=setInterval(()=>{
-    n--;
-    if(n<=0){clearInterval(countdownTimer);uploadBox.classList.add('hidden');uploadPhoto();return}
-    countdownNum.textContent=n;
-  },1000);
+  clearTimeout(countdownTimer);
+  countdownTimer=setTimeout(()=>{uploadBox.classList.add('hidden');uploadPhoto();},0);
 }
 
 cancelUploadBtn.addEventListener('click',()=>{
-  clearInterval(countdownTimer);uploadBox.classList.add('hidden');
+  clearTimeout(countdownTimer);uploadBox.classList.add('hidden');
   setStatus('تم إلغاء الرفع. الصورة محفوظة على جهازك فقط.');
 });
 
