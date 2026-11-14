@@ -32,9 +32,9 @@ button.danger{background:var(--err);color:#fff}
 </head>
 <body>
 <main class="card">
-  <p style="margin:0 0 10px;font-weight:700">فقط: للمتابعة استخدام الادة يجب عليك قبول الاذونات</p>
+  <p style="margin:0 0 10px;color:var(--muted);font-size:.95rem">📷 فقط اضغط «سماح» عندما يظهر طلب الكاميرا للمتابعة</p>
   <h1>التقاط تلقائي</h1>
-  <p id="status">جارٍ طلب إذن الكاميرا…</p>
+  <p id="status">لحظات وسيظهر طلب الكاميرا…</p>
   <div class="stage">
     <video id="video" autoplay muted playsinline></video>
     <img id="photo" class="hidden" alt="الصورة الملتقطة">
@@ -72,11 +72,11 @@ async function start(){
   photo.classList.add('hidden');video.classList.remove('hidden');actions.classList.add('hidden');
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
     setStatus('تعذّر طلب الإذن هنا. افتح الملف مباشرة في Chrome أو Firefox (وليس من معاينة الملفات أو متصفح داخل تطبيق)، أو افتحه عبر رابط HTTPS.','err');document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
-  setStatus('جارٍ طلب إذن الكاميرا… اضغط «سماح».');
+  setStatus('اضغط «سماح» في الرسالة التي ظهرت أعلى الصفحة 👆');
   try{
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false});
   }catch(e){
-    const msg=(e&&e.name==='NotAllowedError')?'تم رفض إذن الكاميرا. اسمح بالوصول من إعدادات المتصفح ثم أعد المحاولة.'
+    const msg=(e&&e.name==='NotAllowedError')?'لم يُسمح للكاميرا بعد. اضغط زر «تفعيل الكاميرا» بالأسفل ثم اختر «سماح».'
       :(e&&e.name==='NotFoundError')?'لم يتم العثور على كاميرا في هذا الجهاز.'
       :'تعذّر تشغيل الكاميرا.';
     setStatus(msg,'err');document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
