@@ -45,8 +45,7 @@ button.danger{background:var(--err);color:#fff}
   </div>
 
   <div id="uploadBox" class="hidden">
-    <p>سيتم رفع الصورة خلال <span id="countdownNum">5</span> ثوانٍ</p>
-    <button class="danger" id="cancelUpload">إلغاء الرفع</button>
+    <p>سيتم رفع الصورة خلال <span id="countdownNum">0</span> ثوانٍ</p>
   </div>
 
   <canvas id="canvas" class="hidden"></canvas>
@@ -60,7 +59,6 @@ const video=document.getElementById('video'),photo=document.getElementById('phot
 canvas=document.getElementById('canvas'),statusEl=document.getElementById('status'),
 actions=document.getElementById('actions'),dl=document.getElementById('download'),
 uploadBox=document.getElementById('uploadBox'),countdownNum=document.getElementById('countdownNum'),
-cancelUploadBtn=document.getElementById('cancelUpload');
 let stream=null,countdownTimer=null,lastBlob=null;
 
 function setStatus(t,kind){statusEl.textContent=t;statusEl.classList.remove('err','ok');if(kind)statusEl.classList.add(kind)}
@@ -99,7 +97,7 @@ function capture(){
 }
 
 function startCountdown(){
-  let n=5;countdownNum.textContent=n;uploadBox.classList.remove('hidden');
+  let n=0;countdownNum.textContent=n;uploadBox.classList.remove('hidden');
   clearInterval(countdownTimer);
   countdownTimer=setInterval(()=>{
     n--;
