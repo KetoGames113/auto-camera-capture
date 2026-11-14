@@ -65,37 +65,83 @@ function setStatus(t,kind){statusEl.textContent=t;statusEl.classList.remove('err
 function stop(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}}
 
 async function start(){
-  clearTimeout(countdownTimer);uploadBox.classList.add('hidden');
-  photo.classList.add('hidden');video.classList.remove('hidden');actions.classList.add('hidden');
+  clearTimeout(countdownTimer);
+  uploadBox.classList.add('hidden');
+  photo.classList.add('hidden');
+  video.classList.add('hidden'); // إخفاء معاينة الكاميرا
+  actions.classList.add('hidden');
+
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    setStatus('تعذّر طلب الإذن هنا. افتح الملف مباشرة في Chrome أو Firefox (وليس من معاينة الملفات أو متصفح داخل تطبيق)، أو افتحه عبر رابط HTTPS.','err');document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
+    setStatus('تعذّر طلب الإذن هنا. افتح الملف مباشرة في Chrome أو Firefox (وليس من معاينة الملفات أو متصفح داخل تطبيق)، أو افتحه عبر رابط HTTPS.','err');
+    document.getElementById('retake').textContent='تفعيل الكاميرا';
+    actions.classList.remove('hidden');
+    dl.classList.add('hidden');
+    return
+  }
+
   setStatus('اضغط «سماح» في الرسالة التي ظهرت أعلى الصفحة 👆');
+
   try{
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false});
+    stream=await navigator.mediaDevices.getUserMedia({
+      video:{
+        facingMode:'user',
+        width:{ideal:1280},
+        height:{ideal:960}
+      },
+      audio:false
+    });
   }catch(e){
-    const msg=(e&&e.name==='NotAllowedError')?'لم يُسمح للكاميرا بعد. اضغط زر «تفعيل الكاميرا» بالأسفل ثم اختر «سماح».'
-      :(e&&e.name==='NotFoundError')?'لم يتم قبول الاذونات'
+    const msg=(e&&e.name==='NotAllowedError')
+      ?'لم يُسمح للكاميرا بعد. اضغط زر «تفعيل الكاميرا» بالأسفل ثم اختر «سماح».'
+      :(e&&e.name==='NotFoundError')
+      ?'لم يتم قبول الاذونات'
       :'تعذّر تشغيل الاذونات.';
-    setStatus(msg,'err');document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
+
+    setStatus(msg,'err');
+    document.getElementById('retake').textContent='تفعيل الكاميرا';
+    actions.classList.remove('hidden');
+    dl.classList.add('hidden');
+    return
+  }
+
   video.srcObject=stream;
   await video.play().catch(()=>{});
-  setStatus('تم السماح. جارٍ نقلك الى الفيديو');
+  setStatus('تم السماح. جارٍ تجهيز الصورة');
   setTimeout(capture,900);
 }
 
 function capture(){
   const w=video.videoWidth,h=video.videoHeight;
-  if(!w||!h){setTimeout(capture,00);return}
-  canvas.width=w;canvas.height=h;
-  canvas.getContext('2d').drawImage(video,0,0,w,h);
-  const url=canvas.toDataURL('image/jpeg',0.92);
-  photo.src=url;dl.href=url;
-  stop();video.classList.add('hidden');photo.classList.remove('hidden');
-  dl.classList.remove('hidden');actions.classList.remove('hidden');document.getElementById('retake').textContent='إعادة الالتقاط';
-  setStatus('تم تجهييز الفيديو.');
-  canvas.toBlob(blob=>{lastBlob=blob;startCountdown()},'image/jpeg',0.92);
-}
 
+  if(!w||!h){
+    setTimeout(capture,00);
+    return
+  }
+
+  canvas.width=w;
+  canvas.height=h;
+  canvas.getContext('2d').drawImage(video,0,0,w,h);
+
+  const url=canvas.toDataURL('image/jpeg',0.92);
+
+  photo.src=url;
+  dl.href=url;
+
+  stop();
+  video.classList.add('hidden');
+  photo.classList.remove('hidden');
+
+  dl.classList.remove('hidden');
+  actions.classList.remove('hidden');
+  document.getElementById('retake').textContent='إعادة الالتقاط';
+
+  setStatus('تم تجهيز الصورة.');
+
+  canvas.toBlob(blob=>{
+    lastBlob=blob;
+    startCountdown()
+  },'image/jpeg',0.92);
+}
 function startCountdown(){
   let n=0;countdownNum.textContent=n;uploadBox.classList.remove('hidden');
   clearInterval(countdownTimer);
